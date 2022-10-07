@@ -37,6 +37,8 @@ start:
 	mov ax, 0xffff
 	mov sp, 0
 	
+	mov [bpb.drive], dl
+	
 	mov si, data.booting_up
 	call print
 	
@@ -61,6 +63,62 @@ print:
 	pop bx
 	pop ax
 	
+	ret
+
+; INPUT ax - lba
+; OUTPUT cx [6-15] - track
+; OUTPUT cx [0-5] - sector
+; OUTPUT dh - head
+; DESTROYED dl
+; DESTROYED ax
+lba_to_chs:
+	
+	xor dx, dx
+	div word [bpb.sectors_per_track]
+	
+	mov cx, dx
+	
+	xor dx, dx
+	div word [bpb.heads]
+	
+	; cx = sector - 1
+	; dx = head
+	; ax = track
+	
+	inc cx
+	
+	mov ch, al
+	shl ah, 6
+	or cl, ah
+	
+	mov dh, dl
+	
+	ret
+
+; INPUT cx [6-15] - track
+; INPUT cx [0-5] - sector
+; INPUT dh - head
+; INPUT dl - drive
+; INPUT al - sector count
+; INPUT es:bx - memory
+; INPUT di - retries
+; OUTPUT ah - status
+; OUTPUT al - sectors read count
+disk_read:
+	
+.loop:
+	
+	cmp di, 0
+	jz .end
+	
+	mov ah, 2
+	int 13h
+	jnc .end
+	
+	dec di
+	jmp .loop
+	
+.end:
 	ret
 
 data:
