@@ -1,9 +1,8 @@
-__asm__(".code16gcc\n");
-__asm__("jmp main\n");
+#include "intr.h"
 
-void main() {
+void start() {
     
-    __asm__ volatile("mov ax, 0x5678");
+    int10h_teletype_output('X', 0, 0);
     while(1);
     
 }

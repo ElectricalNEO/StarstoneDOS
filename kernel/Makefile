@@ -1,13 +1,20 @@
 
 ROOT ?= ..
 
-SOURCES = $(shell find $(ROOT)/kernel -name '*.c')
-OBJECTS = $(patsubst $(ROOT)/kernel/%.c, $(ROOT)/build/kernel/%.o, $(SOURCES))
+SOURCES = $(shell find $(ROOT)/kernel -name '*.c') $(shell find $(ROOT)/kernel -name '*.asm')
+TMP = $(patsubst $(ROOT)/kernel/%.c, $(ROOT)/build/kernel/%_c.o, $(SOURCES))
+OBJECTS = $(patsubst $(ROOT)/kernel/%.asm, $(ROOT)/build/kernel/%_asm.o, $(TMP))
 
-$(ROOT)/build/kernel/%.o: $(ROOT)/kernel/%.c
+CC = /usr/bin/watcom/binl64/wcc
+LD = /usr/bin/watcom/binl64/wlink
+
+$(ROOT)/build/kernel/%_c.o: $(ROOT)/kernel/%.c
 	mkdir -p $(@D)
-	gcc -c -g -Os -m32 -march=i686 -ffreestanding -Wall -Werror -masm=intel $< -o $@
+	$(CC) -0 -d3 -s -wx -ms -zl -zq -ecc -zp0 -fo=$@  $<
 
-$(ROOT)/build/kernel/kernel.bin: $(ROOT)/kernel/linker.ld $(OBJECTS)
-	ld -static -T$(ROOT)/kernel/linker.ld -nostdlib --nmagic -o $@.elf $(OBJECTS)
-	objcopy -O binary $@.elf $@
+$(ROOT)/build/kernel/%_asm.o: $(ROOT)/kernel/%.asm
+	mkdir -p $(@D)
+	nasm -f obj $< -o $@
+
+$(ROOT)/build/kernel/kernel.bin: $(OBJECTS)
+	$(LD) NAME $@ FILE \{ $^ \} @$(ROOT)/kernel/linker.lnk
