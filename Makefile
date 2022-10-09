@@ -16,7 +16,7 @@ include boot/Makefile
 include kernel/Makefile
 
 clean:
-	-rm -rf build
+	-rm -rf build *.err
 
 Starstone.img: $(FILES_FOR_IMAGE)
 	

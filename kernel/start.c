@@ -1,8 +1,8 @@
-#include "intr.h"
+#include "stdio.h"
 
 void start() {
     
-    int10h_teletype_output('X', 0, 0);
+    puts("Starstone 1.0\r\n");
     while(1);
     
 }
