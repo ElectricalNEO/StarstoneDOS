@@ -3,15 +3,17 @@ SHELL=/bin/bash
 
 ROOT ?= $(shell pwd)
 
-BOOTLOADER = $(ROOT)/build/boot/boot.bin
+BOOT = $(ROOT)/build/boot/boot.bin
+KERNEL = $(ROOT)/build/kernel/kernel.bin
 
-FILES_FOR_IMAGE = $(BOOT) loremips.txt
+FILES_FOR_IMAGE = $(BOOT) $(KERNEL)
 
 .PHONY: all clean run
 
 all: run
 
 include boot/Makefile
+include kernel/Makefile
 
 clean:
 	-rm -rf build
@@ -24,7 +26,7 @@ Starstone.img: $(FILES_FOR_IMAGE)
 	dd if=$(BOOT) of=$@ bs=1 count=3 conv=notrunc
 	dd if=$(BOOT) of=$@ bs=1 count=448 seek=62 skip=62 conv=notrunc
 	
-	mcopy -i $@ loremips.txt ::/
+	mcopy -i $@ $(KERNEL) ::/STARKRNL.SYS
 	
 
 run: Starstone.img

@@ -197,12 +197,7 @@ start:
 	cmp cx, 0xff7
 	jb .read_file
 	
-	mov ax, 0x1337
-	mov bx, 0x2137
-	mov cx, 0x6969
-	mov dx, 0x420
-	
-.e:	jmp $
+	jmp 0:0x500
 	
 .error:
 	mov si, data.error
@@ -289,7 +284,7 @@ disk_read:
 
 data:
 .booting_up: db "Booting up Starstone 1.0...", 13, 10, 0
-.filename: db "LOREMIPSTXT"
+.filename: db "STARKRNLSYS"
 .error: db "ERROR!", 13, 10, 0
 
 times 510 - ($ - $$) db 0
