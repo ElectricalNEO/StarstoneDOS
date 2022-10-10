@@ -2,3 +2,4 @@
 build/
 Starstone.img
 *.err
+.vscode/
