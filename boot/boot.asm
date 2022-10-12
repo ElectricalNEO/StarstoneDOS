@@ -47,6 +47,21 @@ start:
 	
 	mov [bpb.drive], dl
 	
+	; GET DRIVE PARAMETERS
+	
+	mov ah, 8
+	xor di, di
+	int 13h
+	
+	inc dh
+	mov [bpb.heads], dh
+	
+	and cl, 0x3f
+	mov [bpb.sectors_per_track], cl
+	
+	xor bx, bx
+	mov es, bx
+	
 	; DISPLAY BOOT MESSAGE
 	
 	mov si, data.booting_up
@@ -197,6 +212,10 @@ start:
 	cmp cx, 0xff7
 	jb .read_file
 	
+	xor ah, ah
+	mov al, [bpb.drive]
+	push ax
+	
 	jmp 0:0x500
 	
 .error:
@@ -283,7 +302,7 @@ disk_read:
 	ret
 
 data:
-.booting_up: db "Booting up Starstone 1.0...", 13, 10, 0
+.booting_up: db "Booting up Starstone...", 13, 10, 0
 .filename: db "STARKRNLSYS"
 .error: db "ERROR!", 13, 10, 0
 

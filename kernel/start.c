@@ -3,11 +3,10 @@
 
 char* itoa_buf = "32767";
 
-void start() {
-    
+void start(uint8_t drive) {
     
     puts("Starstone 1.0\r\n");
-    puts(itoa(123, itoa_buf, 10));
+    puts(itoa(drive, itoa_buf, 16));
     
     while(1);
     
