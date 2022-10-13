@@ -43,3 +43,13 @@ uint8_t init_drive(drive_t* drive, uint8_t drive_num) {
     return 0;
     
 }
+
+void lba_to_chs(drive_t* drive, size_t lba, uint16_t* cylinder_sector, uint8_t* head) {
+    
+    uint16_t cylinder = (lba / drive->sectors_per_track) / drive->heads;
+    uint8_t sector = lba % drive->sectors_per_track + 1;
+    
+    *head = (lba / drive->sectors_per_track) % drive->heads;
+    *cylinder_sector = (cylinder << 6) | (sector & 0x3f);
+    
+}

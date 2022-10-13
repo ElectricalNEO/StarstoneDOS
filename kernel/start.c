@@ -2,8 +2,11 @@
 #include "itoa.h"
 #include "drive.h"
 
-char* itoa_buf = "32767";
+char itoa_buf[6];
 drive_t boot_disk;
+
+uint16_t cylinder_sector;
+uint8_t head;
 
 void start(uint8_t drive) {
     
