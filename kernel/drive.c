@@ -1,6 +1,4 @@
 #include "drive.h"
-#include "itoa.h"
-#include "stdio.h"
 
 uint8_t get_drive_sectors_per_track(uint8_t drive_num);
 #pragma aux get_drive_sectors_per_track = \

@@ -2,6 +2,6 @@
 
 #include "types.h"
 
-char itoa_buf[];
+extern char itoa_buf[];
 
 char* itoa(size_t num, char* buffer, uint8_t base);
