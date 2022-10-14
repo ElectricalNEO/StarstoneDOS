@@ -2,11 +2,12 @@
 #include "itoa.h"
 #include "drive.h"
 
-char itoa_buf[6];
 drive_t boot_disk;
 
 uint16_t cylinder_sector;
 uint8_t head;
+
+char disk_read_buffer[512];
 
 void start(uint8_t drive) {
     
@@ -21,12 +22,15 @@ void start(uint8_t drive) {
         
     }
     
-    puts("Drive number: ");
-    puts(itoa(boot_disk.drive_num, itoa_buf, 10));
-    puts("\r\nSectors per track: ");
-    puts(itoa(boot_disk.sectors_per_track, itoa_buf, 10));
-    puts("\r\nHeads: ");
-    puts(itoa(boot_disk.heads, itoa_buf, 10));
+    if(drive_read_sector_x(&boot_disk, 0, 0, (uint16_t)disk_read_buffer, 5)) {
+        
+        puts("\r\nFailed to read 1 sector starting from LBA 0!\r\nHalting...");
+        while(1);
+        
+    }
+    
+    puts("Done!\r\nBuffer address: 0x");
+    puts(itoa((size_t)disk_read_buffer, itoa_buf, 16));
     
     while(1);
     

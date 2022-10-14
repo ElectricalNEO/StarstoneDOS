@@ -1,9 +1,12 @@
 #include "drive.h"
+#include "itoa.h"
+#include "stdio.h"
 
 uint8_t get_drive_sectors_per_track(uint8_t drive_num);
 #pragma aux get_drive_sectors_per_track = \
 "mov ah, 8" \
 "xor di, di" \
+"mov es, di" \
 "int 13h" \
 "jc error" \
 "and cl, 0x3f" \
@@ -19,6 +22,7 @@ uint8_t get_drive_heads(uint8_t drive_num);
 #pragma aux get_drive_heads = \
 "mov ah, 8" \
 "xor di, di" \
+"mov es, di" \
 "int 13h" \
 "jc error" \
 "inc dh" \
@@ -44,12 +48,42 @@ uint8_t init_drive(drive_t* drive, uint8_t drive_num) {
     
 }
 
+uint8_t drive_read_sector_lba(drive_t* drive, size_t lba, uint16_t segment, uint16_t offset) {
+    
+    uint16_t cylinder_sector;
+    uint8_t head;
+    
+    lba_to_chs(drive, lba, &cylinder_sector, &head);
+    
+    return drive_read_sector_chs(drive->drive_num, cylinder_sector, head, segment, offset);
+    
+}
+
+uint8_t drive_read_sector_x(drive_t* drive, size_t lba, uint16_t segment, uint16_t offset, uint8_t retries) {
+    
+    uint8_t status = 1;
+    uint16_t cylinder_sector;
+    uint8_t head;
+    uint8_t i;
+    
+    lba_to_chs(drive, lba, &cylinder_sector, &head);
+    
+    for(i = 0; i < retries && status; i++) {
+        
+        status = drive_read_sector_chs(drive->drive_num, cylinder_sector, head, segment, offset);
+        
+    }
+    
+    return status;
+    
+}
+
 void lba_to_chs(drive_t* drive, size_t lba, uint16_t* cylinder_sector, uint8_t* head) {
     
     uint16_t cylinder = (lba / drive->sectors_per_track) / drive->heads;
     uint8_t sector = lba % drive->sectors_per_track + 1;
     
     *head = (lba / drive->sectors_per_track) % drive->heads;
-    *cylinder_sector = (cylinder << 6) | (sector & 0x3f);
+    *cylinder_sector = ((cylinder & 0xff) << 8) | ((cylinder & 0x300) >> 2 ) | sector;
     
 }

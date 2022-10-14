@@ -1,5 +1,7 @@
 #include "itoa.h"
 
+char itoa_buf[6];
+
 char* itoa(size_t num, char* buffer, uint8_t base) {
     
     char* ptr_a = buffer;

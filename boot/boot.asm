@@ -39,9 +39,9 @@ start:
 	mov ds, ax
 	mov es, ax
 	
-	mov ax, 0xffff
+	mov ax, 0
 	mov ss, ax
-	mov sp, 0
+	mov sp, 0xffff
 	
 	; SAVE DRIVE NUMBER
 	
