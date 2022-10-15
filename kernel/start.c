@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "itoa.h"
 #include "drive.h"
+#include "divmul32.h"
 
 drive_t boot_disk;
 
@@ -13,6 +14,8 @@ void start(uint8_t drive) {
     
     puts("Starstone 1.0\r\n");
     
+    drive = 0x80;
+    
     if(init_drive(&boot_disk, drive)) {
         
         puts("Failed to get drive 0x");
@@ -22,7 +25,7 @@ void start(uint8_t drive) {
         
     }
     
-    if(drive_read_sector_x(&boot_disk, 0, 0, (uint16_t)disk_read_buffer, 5)) {
+    if(drive_read_sector_x(&boot_disk, 0x10000, 0, (uint16_t)disk_read_buffer, 5)) {
         
         puts("\r\nFailed to read 1 sector starting from LBA 0!\r\nHalting...");
         while(1);

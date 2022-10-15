@@ -1,4 +1,5 @@
 #include "drive.h"
+#include "divmul32.h"
 
 uint8_t get_drive_sectors_per_track(uint8_t drive_num);
 #pragma aux get_drive_sectors_per_track = \
@@ -46,7 +47,7 @@ uint8_t init_drive(drive_t* drive, uint8_t drive_num) {
     
 }
 
-uint8_t drive_read_sector_lba(drive_t* drive, size_t lba, uint16_t segment, uint16_t offset) {
+uint8_t drive_read_sector_lba(drive_t* drive, uint32_t lba, uint16_t segment, uint16_t offset) {
     
     uint16_t cylinder_sector;
     uint8_t head;
@@ -57,7 +58,7 @@ uint8_t drive_read_sector_lba(drive_t* drive, size_t lba, uint16_t segment, uint
     
 }
 
-uint8_t drive_read_sector_x(drive_t* drive, size_t lba, uint16_t segment, uint16_t offset, uint8_t retries) {
+uint8_t drive_read_sector_x(drive_t* drive, uint32_t lba, uint16_t segment, uint16_t offset, uint8_t retries) {
     
     uint8_t status = 1;
     uint16_t cylinder_sector;
@@ -76,12 +77,12 @@ uint8_t drive_read_sector_x(drive_t* drive, size_t lba, uint16_t segment, uint16
     
 }
 
-void lba_to_chs(drive_t* drive, size_t lba, uint16_t* cylinder_sector, uint8_t* head) {
+void lba_to_chs(drive_t* drive, uint32_t lba, uint16_t* cylinder_sector, uint8_t* head) {
     
-    uint16_t cylinder = (lba / drive->sectors_per_track) / drive->heads;
-    uint8_t sector = lba % drive->sectors_per_track + 1;
+    uint16_t cylinder = divide32(divide32(lba, drive->sectors_per_track), drive->heads);
+    uint8_t sector = remainder32(lba, drive->sectors_per_track) + 1;
     
-    *head = (lba / drive->sectors_per_track) % drive->heads;
+    *head = remainder32(divide32(lba, drive->sectors_per_track), drive->heads);
     *cylinder_sector = ((cylinder & 0xff) << 8) | ((cylinder & 0x300) >> 2 ) | sector;
     
 }
