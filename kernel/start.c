@@ -10,8 +10,9 @@ extern char _BREAK;
 
 void start(uint8_t drive) {
     
-    void* mem;
-    void* mem2;
+    uint8_t i;
+    uint8_t drives_connected;
+    drive_t* drives;
     
     clear();
     set_attributes(0x0f);
@@ -27,22 +28,15 @@ void start(uint8_t drive) {
     
     init_heap(&_BREAK);
     
+    drives = init_drives(&drives_connected);
+    
     puts("Initialization complete.\r\n");
     
-    printf("Program break: 0x%x\r\n", (size_t)&_BREAK);
-    
-    mem2 = kmalloc(0x1000);
-    printf("Allocated memory: 0x%x\r\n", mem2);
-    mem = kmalloc(0x102);
-    printf("Allocated memory: 0x%x\r\n", mem);
-    kfree(mem2);
-    mem = kmalloc(0x2);
-    printf("Allocated memory: 0x%x\r\n", mem);
-    mem = kmalloc(0x18);
-    printf("Allocated memory: 0x%x\r\n", mem);
-    mem = kmalloc(0x14);
-    printf("Allocated memory: 0x%x\r\n", mem);
-    printf("Memory chunk size: 0x%x\r\n", sizeof(memory_chunk_t));
+    for(i = 0; i < drives_connected; i++) {
+        
+        printf("DRIVE: 0x%x\r\n", drives[i].drive_num);
+        
+    }
     
     while(1);
     

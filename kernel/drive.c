@@ -1,5 +1,6 @@
 #include "drive.h"
 #include "divmul32.h"
+#include "heap.h"
 
 uint8_t get_drive_sectors_per_track(uint8_t drive_num);
 #pragma aux get_drive_sectors_per_track = \
@@ -44,6 +45,30 @@ uint8_t init_drive(drive_t* drive, uint8_t drive_num) {
     if(!drive->heads) return 1;
     
     return 0;
+    
+}
+
+drive_t* init_drives(uint8_t* connected) {
+    
+    uint8_t i;
+    drive_t* drives;
+    uint8_t drive = 0;
+    *connected = 0;
+    
+    for(i = 0; i < 0xff; i++) if(!check_drive(i)) (*connected)++;
+    
+    drives = kmalloc(*connected * sizeof(drive_t));
+    
+    for(i = 0; i < 0xff; i++) {
+        
+        if(check_drive(i)) continue;
+        
+        init_drive(&drives[drive], i);
+        drive++;
+        
+    }
+    
+    return drives;
     
 }
 
