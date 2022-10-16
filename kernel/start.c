@@ -13,6 +13,9 @@ void start(uint8_t drive) {
     void* mem;
     void* mem2;
     
+    clear();
+    set_attributes(0x0f);
+    
     puts("Starstone 1.0\r\n");
     
     if(init_drive(&boot_disk, drive)) {
@@ -39,7 +42,6 @@ void start(uint8_t drive) {
     printf("Allocated memory: 0x%x\r\n", mem);
     mem = kmalloc(0x14);
     printf("Allocated memory: 0x%x\r\n", mem);
-    print_heap();
     printf("Memory chunk size: 0x%x\r\n", sizeof(memory_chunk_t));
     
     while(1);
