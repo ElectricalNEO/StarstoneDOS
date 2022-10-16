@@ -12,3 +12,4 @@ parm [al]
 void putc(char ch);
 
 void puts(const char* str);
+void printf(const char* fmt, ...);
