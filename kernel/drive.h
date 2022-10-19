@@ -27,6 +27,8 @@ typedef struct drive {
     
 } drive_t;
 
+extern uint8_t disk_tmp_buffer[];
+
 uint8_t check_drive(uint8_t drive_num);
 
 uint8_t init_drive(drive_t* drive, uint8_t drive_num);

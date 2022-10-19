@@ -34,6 +34,8 @@ modify [ax bl cx dx es di] \
 parm [dl] \
 value [dh]
 
+uint8_t disk_tmp_buffer[512];
+
 uint8_t init_drive(drive_t* drive, uint8_t drive_num) {
     
     drive->drive_num = drive_num;

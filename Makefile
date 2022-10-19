@@ -34,4 +34,4 @@ Starstone.img: $(FILES_FOR_IMAGE)
 
 run: Starstone.img
 	@echo -e "\u001b[34mQEMU\u001b[0m $<"
-	@qemu-system-i386 -drive file=$<,if=floppy,format=raw
+	@qemu-system-i386 -drive file=$<,if=floppy,format=raw -drive file=testhd.img,if=ide,format=raw -boot order=a
