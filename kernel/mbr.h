@@ -28,10 +28,12 @@ typedef struct mbr {
 
 typedef struct partition {
     
-    uint8_t drive;
+    drive_t drive;
     uint32_t lba;
     uint8_t part_num; // 0 - 3
     
 } partition_t;
 
 partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* partition_count);
+
+uint8_t partition_read_sector(partition_t* partition, uint32_t lba, uint16_t segment, uint16_t offset);

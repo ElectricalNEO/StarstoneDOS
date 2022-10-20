@@ -2,6 +2,9 @@
 #include "drive.h"
 #include "heap.h"
 #include "mbr.h"
+#include "fs.h"
+#include "itoa.h"
+#include "divmul32.h"
 
 drive_t* boot_disk = 0;
 
@@ -44,7 +47,22 @@ void start(uint8_t drive) {
     
     for(i = 0; i < partition_count; i++) {
         
-        printf("Partition: %s%dp%d (LBA: %d)\r\n", (partitions[i].drive >= 0x80) ? "hd" : "fd", partitions[i].drive % 0x80, partitions[i].part_num, partitions[i].lba);
+        const char* fs = "E";
+        
+        switch(detect_filesystem(&partitions[i])) {
+            
+            case FAT12:
+                fs = "FAT12";
+                break;
+            case FAT16:
+                fs = "FAT16";
+                break;
+            default:
+                fs = "UNKNOWN";
+            
+        }
+        
+        printf("Partition: %s%dp%d (LBA: %D; FS: %s)\r\n", (partitions[i].drive.drive_num >= 0x80) ? "hd" : "fd", partitions[i].drive.drive_num % 0x80, partitions[i].part_num, partitions[i].lba, fs);
         
     }
     

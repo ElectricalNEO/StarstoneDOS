@@ -29,11 +29,15 @@ void printf(const char* fmt, ...) {
             switch(*fmt) {
                 
                 case 'd':
-                    puts(itoa(*arg_p, itoa_buf, 10));
+                    puts(itoa((uint16_t)*arg_p, itoa_buf, 10));
                     arg_p++;
                     break;
+                case 'D':
+                    puts(itoa((uint32_t)*arg_p, itoa_buf, 10));
+                    arg_p+=2;
+                    break;
                 case 'x':
-                    puts(itoa(*arg_p, itoa_buf, 16));
+                    puts(itoa((uint16_t)*arg_p, itoa_buf, 16));
                     arg_p++;
                     break;
                 case 's':

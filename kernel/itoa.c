@@ -1,8 +1,9 @@
 #include "itoa.h"
+#include "divmul32.h"
 
-char itoa_buf[6];
+char itoa_buf[32];
 
-char* itoa(size_t num, char* buffer, uint8_t base) {
+char* itoa(uint32_t num, char* buffer, uint8_t base) {
     
     char* ptr_a = buffer;
     char* ptr_b = buffer;
@@ -15,9 +16,10 @@ char* itoa(size_t num, char* buffer, uint8_t base) {
         
     }
     
-    for(; num; num /= base, ptr_a++) {
+    for(; num; num = divide32(num, base)) {
         
-        *ptr_a = "0123456789ABCDEF"[num % base];
+        *ptr_a = "0123456789ABCDEF"[remainder32(num, base)];
+        ptr_a++;
         
     }
     

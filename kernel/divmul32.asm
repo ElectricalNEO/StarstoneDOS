@@ -37,6 +37,11 @@ _divide32:
     xor edx, edx
     div ecx
     
+    mov ecx, eax
+    shr eax, 16
+    mov edx, eax
+    mov eax, ecx
+    
     mov sp, bp
     pop bp
     ret
@@ -56,7 +61,12 @@ _remainder32:
     mov ecx, [bp + 8]
     xor edx, edx
     div ecx
+    
     mov eax, edx
+    mov ecx, eax
+    shr eax, 16
+    mov edx, eax
+    mov eax, ecx
     
     mov sp, bp
     pop bp

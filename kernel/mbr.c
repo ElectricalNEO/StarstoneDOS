@@ -37,7 +37,7 @@ partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* par
         
         if(drives[i].drive_num < 0x80) {
             
-            partitions[k].drive = drives[i].drive_num;
+            partitions[k].drive = drives[i];
             partitions[k].lba = 0;
             partitions[k].part_num = 0;
             k++;
@@ -53,7 +53,7 @@ partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* par
         
         for(j = 0; j < 4; j++) if(((mbr_t*)disk_tmp_buffer)->partitions[j].system_id) {
             
-            partitions[k].drive = drives[i].drive_num;
+            partitions[k].drive = drives[i];
             partitions[k].lba = ((mbr_t*)disk_tmp_buffer)->partitions[j].lba_start;
             partitions[k].part_num = j;
             k++;
@@ -63,5 +63,11 @@ partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* par
     }
     
     return partitions;
+    
+}
+
+uint8_t partition_read_sector(partition_t* partition, uint32_t lba, uint16_t segment, uint16_t offset) {
+    
+    return drive_read_sector_x(&partition->drive, lba + partition->lba, segment, offset, 5);
     
 }
