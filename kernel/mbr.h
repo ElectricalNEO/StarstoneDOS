@@ -31,6 +31,7 @@ typedef struct partition {
     drive_t drive;
     uint32_t lba;
     uint8_t part_num; // 0 - 3
+    uint8_t bootable;
     
 } partition_t;
 

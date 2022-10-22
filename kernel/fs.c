@@ -4,7 +4,7 @@
 
 filesystem_type_t detect_filesystem(partition_t* partition) {
     
-    partition_read_sector(partition, 0, 0, (uint16_t)disk_tmp_buffer);
+    if(partition_read_sector(partition, 0, 0, (uint16_t)disk_tmp_buffer)) return UNKNOWN;
     
     if(((fat12_16_bpb_t*)disk_tmp_buffer)->signature == 0x28 || ((fat12_16_bpb_t*)disk_tmp_buffer)->signature == 0x29) {
         

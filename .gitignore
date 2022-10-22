@@ -3,4 +3,4 @@ build/
 Starstone.img
 *.err
 .vscode/
-./mem*
+/mem*

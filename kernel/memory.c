@@ -10,3 +10,17 @@ void memcpy(void* src, void* dest, size_t size) {
     }
     
 }
+
+int8_t memcmp(void* ptr1, void* ptr2, size_t size) {
+    
+    size_t i = 0;
+    for(; i < size; i++) {
+        
+        if(*((uint8_t*)ptr1 + i) > *((uint8_t*)ptr2 + i)) return 1;
+        else if(*((uint8_t*)ptr1 + i) < *((uint8_t*)ptr2 + i)) return -1;
+        
+    }
+    
+    return 0;
+    
+}

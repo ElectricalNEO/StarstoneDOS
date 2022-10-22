@@ -40,6 +40,7 @@ partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* par
             partitions[k].drive = drives[i];
             partitions[k].lba = 0;
             partitions[k].part_num = 0;
+            partitions[k].bootable = 1;
             k++;
             continue;
             
@@ -56,6 +57,7 @@ partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* par
             partitions[k].drive = drives[i];
             partitions[k].lba = ((mbr_t*)disk_tmp_buffer)->partitions[j].lba_start;
             partitions[k].part_num = j;
+            partitions[k].bootable = ((mbr_t*)disk_tmp_buffer)->partitions[j].bootable;
             k++;
             
         }
