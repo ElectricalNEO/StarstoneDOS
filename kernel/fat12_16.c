@@ -208,7 +208,6 @@ uint8_t fat12_16_read_file_bytes(fat12_16_t* fs, fat_dir_entry_t* file, uint16_t
     size_t end = (seek + size) / 512;
     
     size_t buf_off = 0;
-    uint8_t status;
     size_t i;
     size_t off;
     size_t _size;
@@ -233,7 +232,7 @@ uint8_t fat12_16_read_file_bytes(fat12_16_t* fs, fat_dir_entry_t* file, uint16_t
             
         }
         
-        memcpy((void*)(disk_tmp_buffer + off), (void*)(offset + buf_off), _size);
+        memcpy_seg(segment, offset + buf_off, 0, (size_t)disk_tmp_buffer + off, _size);
         buf_off += _size;
         
     }

@@ -2,69 +2,53 @@
 #include "heap.h"
 #include "memory.h"
 
-partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* partition_count) {
+partition_list_t* init_partitions(drive_list_t* drives) {
     
-    partition_t* partitions;
-    uint8_t i, j, k;
-    *partition_count = 0;
+    partition_list_t* partitions_head = kmalloc(sizeof(partition_list_t));
+    partition_list_t* partition_current = partitions_head;
+    drive_list_t* drive;
     
-    for(i = 0; i < drive_count; i++) {
+    for(drive = drives; drive->next; drive = drive->next) {
         
-        if(drives[i].drive_num < 0x80) {
+        if(drive->data.drive_num < 0x80) {
             
-            (*partition_count)++;
+            partition_current->data.bootable = 1;
+            partition_current->data.drive = drive->data;
+            partition_current->data.lba = 0;
+            partition_current->data.part_num = 0;
+            
+            partition_current->next = kmalloc(sizeof(partition_list_t));
+            partition_current = partition_current->next;
             continue;
             
         }
         
-        if(drive_read_sector_x(&drives[i], 0, 0, (uint16_t)disk_tmp_buffer, 5)) {
+        if(!drive_read_sector_x(&drive->data, 0, 0, (uint16_t)disk_tmp_buffer, 5)) {
             
-            continue;
-            
-        }
-        
-        for(j = 0; j < 4; j++) if(((mbr_t*)disk_tmp_buffer)->partitions[j].system_id) (*partition_count)++;
-        
-    }
-    
-    if(*partition_count == 0) return 0;
-    
-    partitions = kmalloc(*partition_count * sizeof(partition_t));
-    
-    k = 0;
-    
-    for(i = 0; i < drive_count; i++) {
-        
-        if(drives[i].drive_num < 0x80) {
-            
-            partitions[k].drive = drives[i];
-            partitions[k].lba = 0;
-            partitions[k].part_num = 0;
-            partitions[k].bootable = 1;
-            k++;
-            continue;
-            
-        }
-        
-        if(drive_read_sector_x(&drives[i], 0, 0, (uint16_t)disk_tmp_buffer, 5)) {
-            
-            continue;
-            
-        }
-        
-        for(j = 0; j < 4; j++) if(((mbr_t*)disk_tmp_buffer)->partitions[j].system_id) {
-            
-            partitions[k].drive = drives[i];
-            partitions[k].lba = ((mbr_t*)disk_tmp_buffer)->partitions[j].lba_start;
-            partitions[k].part_num = j;
-            partitions[k].bootable = ((mbr_t*)disk_tmp_buffer)->partitions[j].bootable;
-            k++;
+            uint8_t i = 0;
+            for(; i < 4; i++) {
+                
+                if(((mbr_t*)disk_tmp_buffer)->partitions[i].system_id) {
+                    
+                    partition_current->data.bootable = ((mbr_t*)disk_tmp_buffer)->partitions[i].bootable;
+                    partition_current->data.drive = drive->data;
+                    partition_current->data.lba = ((mbr_t*)disk_tmp_buffer)->partitions[i].lba_start;
+                    partition_current->data.part_num = i;
+                    
+                    partition_current->next = kmalloc(sizeof(partition_list_t));
+                    partition_current = partition_current->next;
+                    
+                }
+                
+            }
             
         }
         
     }
     
-    return partitions;
+    partition_current->next = 0;
+    
+    return partitions_head;
     
 }
 

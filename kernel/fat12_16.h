@@ -73,6 +73,8 @@ typedef struct fat_dir_entry {
     
 } fat_dir_entry_t;
 
+LINKED_LIST(fat12_16_list_t, fat12_16_t)
+
 uint8_t init_fat12_16(partition_t* partition, fat12_16_t* fs);
 
 fat_dir_entry_t fat12_16_find_in_root_dir(fat12_16_t* fs, char* filename);

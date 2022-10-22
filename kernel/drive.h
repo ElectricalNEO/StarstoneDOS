@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.h"
+#include "list.h"
 
 #pragma aux drive_read_sector_chs = \
 "mov ah, 2" \
@@ -27,13 +28,15 @@ typedef struct drive {
     
 } drive_t;
 
+LINKED_LIST(drive_list_t, drive_t)
+
 extern uint8_t disk_tmp_buffer[];
 
 uint8_t check_drive(uint8_t drive_num);
 
 uint8_t init_drive(drive_t* drive, uint8_t drive_num);
 
-drive_t* init_drives(uint8_t* connected);
+drive_list_t* init_drives();
 
 uint8_t drive_read_sector_chs(uint8_t drive_num, uint16_t cylinder_sector, uint8_t head, uint16_t segment, uint16_t offset);
 uint8_t drive_read_sector_lba(drive_t* drive, uint32_t lba, uint16_t segment, uint16_t offset);

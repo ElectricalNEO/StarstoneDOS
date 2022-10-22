@@ -35,6 +35,8 @@ typedef struct partition {
     
 } partition_t;
 
-partition_t* init_partitions(drive_t* drives, uint8_t drive_count, uint16_t* partition_count);
+LINKED_LIST(partition_list_t, partition_t)
+
+partition_list_t* init_partitions(drive_list_t* drives);
 
 uint8_t partition_read_sector(partition_t* partition, uint32_t lba, uint16_t segment, uint16_t offset);
