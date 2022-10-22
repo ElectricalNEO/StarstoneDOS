@@ -4,11 +4,21 @@
 #include "memory.h"
 
 partition_list_t* partitions = 0;
+partition_t* boot_part = 0;
 
-void init_partition_manager() {
+void init_partition_manager(char boot_drive) {
+    
+    uint8_t i = 0;
     
     if(partitions) return;
     partitions = init_partitions(get_drives());
+    
+    for(; i < 4; i++) {
+        
+        boot_part = get_partition_by_id(boot_drive, i);
+        if(boot_part && boot_part->bootable) break;
+        
+    }
     
 }
 
@@ -31,6 +41,8 @@ partition_t* get_partition_by_name(char* name) {
     
     uint8_t drive_id = 0;
     uint8_t part_id;
+    
+    if(!memcmp(name, "boot", 4)) return boot_part;
     
     if(!memcmp(name, "hd", 2)) drive_id = 0x80;
     else if(!memcmp(name, "fd", 2)) drive_id = 0;

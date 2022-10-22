@@ -65,6 +65,15 @@ fat12_16_t* get_fs_by_part_name(char* name) {
     uint8_t drive_id;
     uint8_t part_id;
     
+    if(!memcmp(name, "boot", 4)) {
+        
+        partition_t* part = get_partition_by_name("boot");
+        if(!part) return 0;
+        
+        return get_fs_by_part_id(part->drive.drive_num, part->part_num);
+        
+    }
+    
     if(!memcmp(name, "hd", 2)) drive_id = 0x80;
     else if(!memcmp(name, "fd", 2)) drive_id = 0;
     else return 0;

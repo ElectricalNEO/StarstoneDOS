@@ -3,12 +3,12 @@
 #include "drive_manager.h"
 #include "partition_manager.h"
 #include "fs_manager.h"
+#include "file.h"
+#include "string.h"
 
 void start(uint8_t drive) {
     
-    fat12_16_t* boot_fs;
-    fat_dir_entry_t dir;
-    fat_dir_entry_t file;
+    file_t* file;
     char rhoncus[8];
     
     clear();
@@ -18,45 +18,29 @@ void start(uint8_t drive) {
     
     init_heap();
     init_drive_manager();
-    init_partition_manager();
+    init_partition_manager(drive);
     init_fs_manager();
-    
-    {uint8_t i = 0; for(; i < 4; i++) {
-        
-        boot_fs = get_fs_by_part_id(drive, i);
-        if(boot_fs && boot_fs->partition.bootable) break;
-        boot_fs = 0;
-        
-    }}
-    
-    if(!boot_fs) {
-        
-        printf("Failed to initialize file system on the boot partition!\r\nHalting...\r\n");
-        while(1);
-        
-    }
     
     printf("Initialization complete.\r\n");
     
-    dir = fat12_16_find_in_root_dir(boot_fs, "DATA       ");
-    if(!dir.cluster_low) {
+    file = fopen("/data/loremips.txt");
+    
+    if(!file) {
         
-        printf("Directory \"DATA\" not found!\r\nHalting...\r\n");
+        printf("Failed to open file \"/DATA/LOREMIPS.TXT!\"!\r\nHalting...\r\n");
         while(1);
         
     }
     
-    file = fat12_16_find_in_dir(boot_fs, "LOREMIPSTXT", &dir);
-    if(!file.cluster_low) {
+    if(fseek(file, 0x1ff, SEEK_SET)) {
         
-        printf("File \"DATA/LOREMIPS.TXT\" not found!\r\nHalting...\r\n");
-        while(1);
+        printf("Failed to seek to byte 511th of file \"/DATA/LOREMIPS.TXT!\"!\r\nHalting...\r\n");
         
     }
     
-    if(fat12_16_read_file_bytes(boot_fs, &file, 0x1ff, 7, 0, (size_t)rhoncus)) {
+    if(fread(file, 0, (uint16_t)rhoncus, 7)) {
         
-        printf("Failed to read 7 bytes starting at 511th byte from file \"LOREMIPS.TXT\"!\r\nHalting...\r\n");
+        printf("Failed to read 7 bytes starting at byte 511th from file \"/DATA/LOREMIPS.TXT\"!\r\nHalting...\r\n");
         
     }
     

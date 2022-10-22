@@ -24,3 +24,10 @@ int8_t memcmp(void* ptr1, void* ptr2, size_t size) {
     return 0;
     
 }
+
+void memset(void* mem, uint8_t val, size_t size) {
+    
+    size_t i = 0;
+    for(; i < size; i++) *((uint8_t*)mem + i) = val;
+    
+}
