@@ -10,6 +10,8 @@ typedef struct memory_chunk {
     
 } memory_chunk_t;
 
-void init_heap(void* addr);
+extern char _BREAK;
+
+void init_heap();
 void* kmalloc(size_t size);
 void kfree(void* addr);

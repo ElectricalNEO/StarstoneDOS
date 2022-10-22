@@ -17,6 +17,11 @@ _multiply32:
     mov ecx, [bp + 8]
     mul ecx
     
+    mov ecx, eax
+    shr eax, 16
+    mov edx, eax
+    mov eax, ecx
+    
     mov sp, bp
     pop bp
     ret

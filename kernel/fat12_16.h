@@ -2,8 +2,8 @@
 
 #include "mbr.h"
 
-#define FAT12 0
-#define FAT16 1
+#define TYPE_FAT12 0
+#define TYPE_FAT16 1
 
 typedef struct fat12_16 {
     

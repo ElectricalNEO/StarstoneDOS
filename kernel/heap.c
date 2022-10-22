@@ -12,11 +12,9 @@ void combine_with_next(memory_chunk_t* chunk) {
     
 }
 
-void init_heap(void* addr) {
+void init_heap() {
     
-    if(!addr) return;
-    
-    heap = addr;
+    heap = (memory_chunk_t*)&_BREAK;
     heap->prev = 0;
     heap->next = 0;
     heap->used = 0;

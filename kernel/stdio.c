@@ -1,5 +1,5 @@
 #include "stdio.h"
-#include "itoa.h"
+#include "conv.h"
 
 void putc(char ch);
 
@@ -33,12 +33,16 @@ void printf(const char* fmt, ...) {
                     arg_p++;
                     break;
                 case 'D':
-                    puts(itoa((uint32_t)*arg_p, itoa_buf, 10));
+                    puts(itoa(*(uint32_t*)arg_p, itoa_buf, 10));
                     arg_p+=2;
                     break;
                 case 'x':
                     puts(itoa((uint16_t)*arg_p, itoa_buf, 16));
                     arg_p++;
+                    break;
+                case 'X':
+                    puts(itoa(*(uint32_t*)arg_p, itoa_buf, 16));
+                    arg_p+=2;
                     break;
                 case 's':
                     puts((char*)*arg_p);

@@ -16,8 +16,8 @@ uint8_t init_fat12_16(partition_t* partition, fat12_16_t* fs) {
         data_sectors = total_sectors - (((fat12_16_bpb_t*)disk_tmp_buffer)->reserved_sectors + (((fat12_16_bpb_t*)disk_tmp_buffer)->fats * ((fat12_16_bpb_t*)disk_tmp_buffer)->sectors_per_fat) + fs->root_dir_sectors);
         total_clusters = divide32(data_sectors, ((fat12_16_bpb_t*)disk_tmp_buffer)->sectors_per_cluster);
         
-        if(total_clusters < 4085) fs->type = FAT12;
-        else fs->type = FAT16;
+        if(total_clusters < 4085) fs->type = TYPE_FAT12;
+        else fs->type = TYPE_FAT16;
         
         fs->data_start = ((fat12_16_bpb_t*)disk_tmp_buffer)->reserved_sectors + (((fat12_16_bpb_t*)disk_tmp_buffer)->fats * ((fat12_16_bpb_t*)disk_tmp_buffer)->sectors_per_fat) + fs->root_dir_sectors;
         fs->fats = ((fat12_16_bpb_t*)disk_tmp_buffer)->fats;
@@ -84,7 +84,7 @@ uint8_t fat12_16_read_file_sector(fat12_16_t* fs, fat_dir_entry_t* file, uint16_
             
         }
         
-        if(fs->type == FAT12) {
+        if(fs->type == TYPE_FAT12) {
             
             uint16_t fat_offset = cluster + (cluster / 2);
             uint16_t fat_sector = fs->reserved_sectors + (fat_offset / 512);
@@ -107,7 +107,7 @@ uint8_t fat12_16_read_file_sector(fat12_16_t* fs, fat_dir_entry_t* file, uint16_
                 
             }
             
-        } else if(fs->type == FAT16) {
+        } else if(fs->type == TYPE_FAT16) {
             
             uint16_t fat_offset = cluster * 2;
             uint16_t fat_sector = fs->reserved_sectors + (fat_offset / 512);
@@ -151,7 +151,7 @@ uint8_t fat12_16_read_file(fat12_16_t* fs, fat_dir_entry_t* file, uint16_t segme
             
         }
         
-        if(fs->type == FAT12) {
+        if(fs->type == TYPE_FAT12) {
             
             uint16_t fat_offset = cluster + (cluster / 2);
             uint16_t fat_sector = fs->reserved_sectors + (fat_offset / 512);
@@ -174,7 +174,7 @@ uint8_t fat12_16_read_file(fat12_16_t* fs, fat_dir_entry_t* file, uint16_t segme
                 
             }
             
-        } else if(fs->type == FAT16) {
+        } else if(fs->type == TYPE_FAT16) {
             
             uint16_t fat_offset = cluster * 2;
             uint16_t fat_sector = fs->reserved_sectors + (fat_offset / 512);

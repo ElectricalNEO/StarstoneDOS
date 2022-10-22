@@ -72,6 +72,7 @@ drive_list_t* init_drives() {
     }
     
     kfree(drive_current->next);
+    drive_current->next = 0;
     
     return drives_head;
     

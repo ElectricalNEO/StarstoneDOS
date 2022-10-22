@@ -46,6 +46,7 @@ partition_list_t* init_partitions(drive_list_t* drives) {
         
     }
     
+    kfree(partition_current->next);
     partition_current->next = 0;
     
     return partitions_head;
