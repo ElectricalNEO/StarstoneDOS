@@ -64,3 +64,34 @@ void printf(const char* fmt, ...) {
     }
     
 }
+
+void gets(char* buf, size_t buf_size) {
+    
+    size_t i = 0;
+    while(1) {
+        
+        char key = getc();
+        
+        if(key == '\b' && i > 0) {
+            
+            puts("\b \b");
+            i--;
+            
+        } else if(key == '\r') {
+            
+            putc('\r');
+            putc('\n');
+            buf[i] = 0;
+            return;
+            
+        } else if(i < buf_size - 1 && key != '\b') {
+            
+            putc(key);
+            buf[i] = key;
+            i++;
+            
+        }
+        
+    }
+    
+}

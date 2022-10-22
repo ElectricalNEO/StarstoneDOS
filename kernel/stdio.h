@@ -22,6 +22,12 @@ modify [ax]
 modify [ax cx dx] \
 parm [bh]
 
+#pragma aux getc = \
+"xor ah, ah" \
+"int 16h" \
+modify [ah] \
+value [al]
+
 void putc(char ch);
 
 void puts(const char* str);
@@ -29,3 +35,6 @@ void printf(const char* fmt, ...);
 
 void clear();
 void set_attributes(uint8_t attributes); // clears the screen but keeps cursor position
+
+char getc();
+void gets(char* buf, size_t buf_size);

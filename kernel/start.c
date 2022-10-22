@@ -10,6 +10,7 @@ void start(uint8_t drive) {
     
     file_t* file;
     char rhoncus[8];
+    char name[20];
     
     clear();
     set_attributes(0x0f);
@@ -22,6 +23,10 @@ void start(uint8_t drive) {
     init_fs_manager();
     
     printf("Initialization complete.\r\n");
+    
+    printf("Enter your name: ");
+    gets(name, 20);
+    printf("Hello, %s!\r\n", name);
     
     file = fopen("/data/loremips.txt");
     
