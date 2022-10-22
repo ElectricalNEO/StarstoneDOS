@@ -32,7 +32,7 @@ Starstone.img: $(FILES_FOR_IMAGE)
 	@mcopy -i $@ $(KERNEL) ::/STARKRNL.SYS
 	@mmd -i $@ ::/DATA
 	@mcopy -i $@ LOREMIPS.TXT ::/DATA/LOREMIPS.TXT
-	@mcopy -i $@ LOREMIPS.TXT ::/LOREMIPS.TXT
+	@mcopy -i $@ LOREMIPS.TXT ::/LOREM.TXT
 	
 
 run: Starstone.img

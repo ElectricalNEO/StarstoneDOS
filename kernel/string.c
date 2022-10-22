@@ -1,4 +1,5 @@
 #include "string.h"
+#include "memory.h"
 
 char* strtok_buf;
 
@@ -56,5 +57,11 @@ void to_lowercase(char* str) {
         str++;
         
     }
+    
+}
+
+uint8_t strcmp(char* str1, char* str2) {
+    
+    return memcmp(str1, str2, strlen(str1) + 1);
     
 }

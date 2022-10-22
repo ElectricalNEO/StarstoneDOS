@@ -14,14 +14,6 @@ parm [al]
 "int 10h" \
 modify [ax]
 
-#pragma aux set_attributes = \
-"mov ax, 0x600" \
-"mov cx, 0x0000" \
-"mov dx, 0x184f" \
-"int 10h" \
-modify [ax cx dx] \
-parm [bh]
-
 #pragma aux getc = \
 "xor ah, ah" \
 "int 16h" \
@@ -34,7 +26,6 @@ void puts(const char* str);
 void printf(const char* fmt, ...);
 
 void clear();
-void set_attributes(uint8_t attributes); // clears the screen but keeps cursor position
 
 char getc();
 void gets(char* buf, size_t buf_size);

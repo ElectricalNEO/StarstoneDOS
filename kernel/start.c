@@ -3,17 +3,12 @@
 #include "drive_manager.h"
 #include "partition_manager.h"
 #include "fs_manager.h"
-#include "file.h"
-#include "string.h"
+#include "shell.h"
+#include "memory.h"
 
 void start(uint8_t drive) {
     
-    file_t* file;
-    char rhoncus[8];
-    char name[20];
-    
     clear();
-    set_attributes(0x0f);
     
     printf("Starstone 1.0\r\n");
     
@@ -24,33 +19,24 @@ void start(uint8_t drive) {
     
     printf("Initialization complete.\r\n");
     
-    printf("Enter your name: ");
-    gets(name, 20);
-    printf("Hello, %s!\r\n", name);
-    
-    file = fopen("/data/loremips.txt");
-    
-    if(!file) {
+    {
         
-        printf("Failed to open file \"/DATA/LOREMIPS.TXT!\"!\r\nHalting...\r\n");
-        while(1);
+        char command[255];
         
-    }
-    
-    if(fseek(file, 0x1ff, SEEK_SET)) {
+        printf("\r\nWelcome to Starstone Built-in Shell! Type \"help\" to get a list of commands\r\n");
         
-        printf("Failed to seek to byte 511th of file \"/DATA/LOREMIPS.TXT!\"!\r\nHalting...\r\n");
+        shell_dir_path = kmalloc(5);
+        memcpy("boot", shell_dir_path, 5);
         
-    }
-    
-    if(fread(file, 0, (uint16_t)rhoncus, 7)) {
-        
-        printf("Failed to read 7 bytes starting at byte 511th from file \"/DATA/LOREMIPS.TXT\"!\r\nHalting...\r\n");
+        while(1) {
+            
+            printf("%s >>> ", shell_dir_path);
+            gets(command, 255);
+            exec_command(command);
+            
+        }
         
     }
-    
-    rhoncus[7] = 0;
-    printf(rhoncus);
     
     while(1);
     
