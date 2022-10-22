@@ -1,7 +1,6 @@
 #include "fat12_16.h"
 #include "divmul32.h"
 #include "memory.h"
-#include "stdio.h"
 
 uint8_t init_fat12_16(partition_t* partition, fat12_16_t* fs) {
     
@@ -59,6 +58,34 @@ fat_dir_entry_t fat12_16_find_in_root_dir(fat12_16_t* fs, char* filename) {
             return dir[root_dir_entry % 16];
             
         }
+        
+    }
+    
+    return no_ret;
+    
+}
+
+fat_dir_entry_t fat12_16_find_in_dir(fat12_16_t* fs, char* filename, fat_dir_entry_t* dir) {
+    
+    fat_dir_entry_t* dir_mem = (fat_dir_entry_t*)disk_tmp_buffer;
+    uint16_t i = 0;
+    fat_dir_entry_t no_ret = {.cluster_low = 0};
+    
+    while(!fat12_16_read_file_sector(fs, dir, i, 0, (uint16_t)disk_tmp_buffer)) {
+        
+        uint8_t entry = 0;
+        
+        for(; entry < 16; entry++) {
+            
+            if(memcmp(dir_mem[entry].filename, filename, 11) == 0) {
+                
+                return dir_mem[entry];
+                
+            }
+            
+        }
+        
+        i++;
         
     }
     

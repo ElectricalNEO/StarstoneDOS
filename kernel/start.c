@@ -7,6 +7,7 @@
 void start(uint8_t drive) {
     
     fat12_16_t* boot_fs;
+    fat_dir_entry_t dir;
     fat_dir_entry_t file;
     char rhoncus[8];
     
@@ -37,10 +38,18 @@ void start(uint8_t drive) {
     
     printf("Initialization complete.\r\n");
     
-    file = fat12_16_find_in_root_dir(boot_fs, "LOREMIPSTXT");
+    dir = fat12_16_find_in_root_dir(boot_fs, "DATA       ");
+    if(!dir.cluster_low) {
+        
+        printf("Directory \"DATA\" not found!\r\nHalting...\r\n");
+        while(1);
+        
+    }
+    
+    file = fat12_16_find_in_dir(boot_fs, "LOREMIPSTXT", &dir);
     if(!file.cluster_low) {
         
-        printf("File \"LOREMIPS.TXT\" not found!\r\nHalting...\r\n");
+        printf("File \"DATA/LOREMIPS.TXT\" not found!\r\nHalting...\r\n");
         while(1);
         
     }

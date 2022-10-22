@@ -30,6 +30,8 @@ Starstone.img: $(FILES_FOR_IMAGE)
 	@dd if=$(BOOT) of=$@ bs=1 count=448 seek=62 skip=62 conv=notrunc status=none
 	
 	@mcopy -i $@ $(KERNEL) ::/STARKRNL.SYS
+	@mmd -i $@ ::/DATA
+	@mcopy -i $@ LOREMIPS.TXT ::/DATA/LOREMIPS.TXT
 	@mcopy -i $@ LOREMIPS.TXT ::/LOREMIPS.TXT
 	
 
