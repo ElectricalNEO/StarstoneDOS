@@ -6,35 +6,27 @@
 #include "conv.h"
 #include "stdio.h"
 
-fat12_16_list_t* fs_list = 0;
+fs_list_t* fs_list = 0;
 
 void init_fs_manager() {
     
     partition_list_t* partitions;
     partition_list_t* partitions_node;
-    fat12_16_list_t* fs_node;
-    fat12_16_t fs;
+    fs_list_t* fs_node;
     
     if(fs_list) return;
     
-    fs_list = kmalloc(sizeof(fat12_16_list_t));
+    fs_list = kmalloc(sizeof(fs_list_t));
     fs_node = fs_list;
     
     partitions = get_partitions();
     
     for(partitions_node = partitions; partitions_node->next; partitions_node = partitions_node->next) {
         
-        switch(detect_filesystem(&partitions_node->data)) {
+        if(!init_fs(&fs_node->data, &partitions_node->data)) {
             
-            case FAT12:
-            case FAT16:
-                if(!init_fat12_16(&partitions_node->data, &fs)) {
-                    
-                    fs_node->data = fs;
-                    fs_node->next = kmalloc(sizeof(fat12_16_list_t));
-                    fs_node = fs_node->next;
-                    
-                }
+            fs_node->next = kmalloc(sizeof(fs_list_t));
+            fs_node = fs_node->next;
             
         }
         
@@ -45,9 +37,9 @@ void init_fs_manager() {
     
 }
 
-fat12_16_t* get_fs_by_part_id(uint8_t drive_id, uint8_t part_id) {
+fs_t* get_fs_by_part_id(uint8_t drive_id, uint8_t part_id) {
     
-    fat12_16_list_t* fs_node;
+    fs_list_t* fs_node;
     
     if(!fs_list) return 0;
     for(fs_node = fs_list; fs_node->next; fs_node = fs_node->next) {
@@ -60,7 +52,7 @@ fat12_16_t* get_fs_by_part_id(uint8_t drive_id, uint8_t part_id) {
     
 }
 
-fat12_16_t* get_fs_by_part_name(char* name) {
+fs_t* get_fs_by_part_name(char* name) {
     
     uint8_t drive_id;
     uint8_t part_id;
@@ -89,7 +81,7 @@ fat12_16_t* get_fs_by_part_name(char* name) {
     
 }
 
-fat12_16_list_t* get_all_fs() {
+fs_list_t* get_all_fs() {
     
     return fs_list;
     

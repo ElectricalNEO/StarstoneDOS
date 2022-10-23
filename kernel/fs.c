@@ -1,5 +1,4 @@
 #include "fs.h"
-#include "fat12_16.h"
 #include "divmul32.h"
 
 filesystem_type_t detect_filesystem(partition_t* partition) {
@@ -18,6 +17,28 @@ filesystem_type_t detect_filesystem(partition_t* partition) {
         
     }
     
+    if(partition_read_sector(partition, 2, 0, (uint16_t)disk_tmp_buffer)) return UNKNOWN;
+    
+    if(((ext2_superblock_t*)disk_tmp_buffer)->signature == EXT2_SIGNATURE) return EXT2;
+    
     return UNKNOWN;
+    
+}
+
+uint8_t init_fs(fs_t* fs, partition_t* partition) {
+    
+    fs->type = detect_filesystem(partition);
+    
+    switch(fs->type) {
+        
+        case FAT12:
+        case FAT16:
+            return init_fat12_16(partition, fs);
+        case EXT2:
+            return init_ext2(partition, fs);
+        default:
+            return 1;
+        
+    }
     
 }

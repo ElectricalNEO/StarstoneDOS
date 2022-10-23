@@ -19,6 +19,7 @@ void help() {
     printf("ls - Show contents of the current directory\r\n");
     printf("cd - Change directory\r\n");
     printf("cat - Print file's content\r\n");
+    printf("clear - Clear screen\r\n");
     printf("part - Set current partition\r\n");
     printf("list - List disks [disk] or partitions [part]\r\n");
     
@@ -161,7 +162,7 @@ void cat() {
 void part() {
     
     char* token = strtok(0, "");
-    fat12_16_t* fs = get_fs_by_part_name(token);
+    fs_t* fs = get_fs_by_part_name(token);
     
     if(!token) return;
     
@@ -195,12 +196,27 @@ void list() {
         
     } else if(!strcmp(token, "part")) {
         
-        partition_list_t* partitions = get_partitions();
-        partition_list_t* node = partitions;
+        fs_list_t* fs_list = get_all_fs();
+        fs_list_t* node = fs_list;
         
         for(; node->next; node = node->next) {
             
-            printf("%s%dp%d%s\r\n", (node->data.drive.drive_num >= 0x80) ? "hd" : "fd", node->data.drive.drive_num % 0x80, node->data.part_num, node->data.bootable ? " [boot]" : "");
+            char* fs_type = "UNKNOWN";
+            
+            switch(node->data.type) {
+                
+                case FAT12:
+                    fs_type = "FAT12";
+                    break;
+                case FAT16:
+                    fs_type = "FAT16";
+                    break;
+                case EXT2:
+                    fs_type = "EXT2";
+                
+            }
+            
+            printf("%s%dp%d%s [%s]\r\n", (node->data.partition.drive.drive_num >= 0x80) ? "hd" : "fd", node->data.partition.drive.drive_num % 0x80, node->data.partition.part_num, node->data.partition.bootable ? " [boot]" : "", fs_type);
             
         }
         

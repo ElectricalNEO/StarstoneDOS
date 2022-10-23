@@ -2,12 +2,7 @@
 
 #include "mbr.h"
 
-#define TYPE_FAT12 0
-#define TYPE_FAT16 1
-
 typedef struct fat12_16 {
-    
-    partition_t partition;
     
     uint8_t sectors_per_cluster;
     uint16_t reserved_sectors;
@@ -18,8 +13,6 @@ typedef struct fat12_16 {
     uint32_t root_dir_start;
     uint32_t root_dir_sectors;
     uint32_t data_start;
-    
-    uint8_t type; // FAT12 or FAT16
     
 } fat12_16_t;
 
@@ -73,13 +66,13 @@ typedef struct fat_dir_entry {
     
 } fat_dir_entry_t;
 
-LINKED_LIST(fat12_16_list_t, fat12_16_t)
+typedef struct fs_t fs_t;
 
-uint8_t init_fat12_16(partition_t* partition, fat12_16_t* fs);
+uint8_t init_fat12_16(partition_t* partition, fs_t* fs);
 
-fat_dir_entry_t fat12_16_find_in_root_dir(fat12_16_t* fs, char* filename);
-fat_dir_entry_t fat12_16_find_in_dir(fat12_16_t* fs, char* filename, fat_dir_entry_t* dir);
+fat_dir_entry_t fat12_16_find_in_root_dir(fs_t* fs, char* filename);
+fat_dir_entry_t fat12_16_find_in_dir(fs_t* fs, char* filename, fat_dir_entry_t* dir);
 
-uint8_t fat12_16_read_file_sector(fat12_16_t* fs, fat_dir_entry_t* file, uint16_t sector, uint16_t segment, uint16_t offset);
-uint8_t fat12_16_read_file(fat12_16_t* fs, fat_dir_entry_t* file, uint16_t segment, uint16_t offset);
-uint8_t fat12_16_read_file_bytes(fat12_16_t* fs, fat_dir_entry_t* file, uint16_t seek, uint16_t size, uint16_t segment, uint16_t offset);
+uint8_t fat12_16_read_file_sector(fs_t* fs, fat_dir_entry_t* file, uint16_t sector, uint16_t segment, uint16_t offset);
+uint8_t fat12_16_read_file(fs_t* fs, fat_dir_entry_t* file, uint16_t segment, uint16_t offset);
+uint8_t fat12_16_read_file_bytes(fs_t* fs, fat_dir_entry_t* file, uint16_t seek, uint16_t size, uint16_t segment, uint16_t offset);
