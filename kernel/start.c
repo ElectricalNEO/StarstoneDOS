@@ -8,6 +8,9 @@
 
 void start(uint8_t drive) {
     
+    fs_t* ext2;
+    ext2_inode_t inode;
+    
     clear();
     
     printf("Starstone 1.0\r\n");
@@ -18,6 +21,20 @@ void start(uint8_t drive) {
     init_fs_manager();
     
     printf("Initialization complete.\r\n");
+    
+    ext2 = get_fs_by_part_name("hd0p1");
+    if(!ext2) {
+        
+        printf("No hd0p1!\r\n");
+        while(1);
+        
+    }
+    
+    if(ext2_read_inode(ext2, 2, &inode)) {
+        
+        printf("Failed to read root directory inode!\r\n");
+        
+    } else printf("%D\r\n", inode.modification_time);
     
     {
         

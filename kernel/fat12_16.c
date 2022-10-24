@@ -42,6 +42,8 @@ fat_dir_entry_t fat12_16_find_in_root_dir(fs_t* fs, char* filename) {
     fat_dir_entry_t* dir = (fat_dir_entry_t*)disk_tmp_buffer;
     fat_dir_entry_t no_ret = {.cluster_low = 0};
     
+    if(fs->type != FAT12 && fs->type != FAT16) return no_ret;
+    
     for(; root_dir_entry < fs->fs.fat12_16.root_dir_entries; root_dir_entry++) {
         
         if(root_dir_entry % 16 == 0) {
@@ -72,6 +74,8 @@ fat_dir_entry_t fat12_16_find_in_dir(fs_t* fs, char* filename, fat_dir_entry_t* 
     uint16_t i = 0;
     fat_dir_entry_t no_ret = {.cluster_low = 0};
     
+    if(fs->type != FAT12 && fs->type != FAT16) return no_ret;
+    
     while(!fat12_16_read_file_sector(fs, dir, i, 0, (uint16_t)disk_tmp_buffer)) {
         
         uint8_t entry = 0;
@@ -100,6 +104,8 @@ uint8_t fat12_16_read_file_sector(fs_t* fs, fat_dir_entry_t* file, uint16_t sect
     uint16_t sector_off = sector % fs->fs.fat12_16.sectors_per_cluster;
     uint16_t cluster = file->cluster_low;
     uint8_t cluster_i = 0;
+    
+    if(fs->type != FAT12 && fs->type != FAT16) return 1;
     
     while(1) {
         
@@ -155,7 +161,7 @@ uint8_t fat12_16_read_file_sector(fs_t* fs, fat_dir_entry_t* file, uint16_t sect
                 
             }
             
-        } else return 1;
+        }
         
         cluster_i++;
         
@@ -166,6 +172,8 @@ uint8_t fat12_16_read_file_sector(fs_t* fs, fat_dir_entry_t* file, uint16_t sect
 uint8_t fat12_16_read_file(fs_t* fs, fat_dir_entry_t* file, uint16_t segment, uint16_t offset) {
     
     uint16_t cluster = file->cluster_low;
+    
+    if(fs->type != FAT12 && fs->type != FAT16) return 1;
     
     while(1) {
         
@@ -222,7 +230,7 @@ uint8_t fat12_16_read_file(fs_t* fs, fat_dir_entry_t* file, uint16_t segment, ui
                 
             }
             
-        } else return 1;
+        }
         
     }
     
@@ -239,6 +247,8 @@ uint8_t fat12_16_read_file_bytes(fs_t* fs, fat_dir_entry_t* file, uint16_t seek,
     size_t i;
     size_t off;
     size_t _size;
+    
+    if(fs->type != FAT12 && fs->type != FAT16) return 1;
     
     for(i = start; i <= end; i++) {
         

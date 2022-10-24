@@ -27,9 +27,9 @@ filesystem_type_t detect_filesystem(partition_t* partition) {
 
 uint8_t init_fs(fs_t* fs, partition_t* partition) {
     
-    fs->type = detect_filesystem(partition);
+    fs->type = UNKNOWN;
     
-    switch(fs->type) {
+    switch(detect_filesystem(partition)) {
         
         case FAT12:
         case FAT16:
