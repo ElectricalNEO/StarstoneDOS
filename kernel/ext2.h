@@ -129,4 +129,10 @@ typedef struct ext2_t {
 typedef struct fs_t fs_t;
 
 uint8_t init_ext2(partition_t* partition, fs_t* fs);
+
 uint8_t ext2_read_inode(fs_t* fs, uint32_t inode_index, ext2_inode_t* inode);
+
+uint8_t ext2_read_file_sector(fs_t* fs, ext2_inode_t* inode, uint32_t sector_i, uint16_t segment, uint16_t offset);
+uint8_t ext2_read_file_bytes(fs_t* fs, ext2_inode_t* file, uint16_t seek, uint16_t size, uint16_t segment, uint16_t offset);
+
+uint8_t ext2_find_file(fs_t* fs, ext2_inode_t* directory, ext2_inode_t* output, char* name);

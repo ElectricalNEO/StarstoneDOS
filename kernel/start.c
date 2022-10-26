@@ -34,7 +34,15 @@ void start(uint8_t drive) {
         
         printf("Failed to read root directory inode!\r\n");
         
-    } else printf("%D\r\n", inode.modification_time);
+    } else {
+        
+        if(!ext2_find_file(ext2, &inode, &inode, "file123123")) {
+            
+            printf("File found!\r\n");
+            
+        }
+        
+    }
     
     {
         

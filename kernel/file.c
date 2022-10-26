@@ -4,10 +4,17 @@
 #include "heap.h"
 #include "memory.h"
 
+typedef union file_fs_t {
+    
+    fat_dir_entry_t fat;
+    ext2_inode_t ext2;
+    
+} file_fs_t;
+
 typedef struct file_t {
     
     fs_t* fs;
-    fat_dir_entry_t dir_entry;
+    file_fs_t file;
     uint32_t seek;
     
 } file_t;
@@ -41,7 +48,7 @@ file_t* fopen(char* path) {
         
         case FAT12:
         case FAT16:
-            dir->dir_entry.cluster_low = 0;
+            dir->file.fat.cluster_low = 0;
             dir->fs = fs;
             
             while(token) {
@@ -72,10 +79,10 @@ file_t* fopen(char* path) {
                 
                 to_uppercase(filename);
                 
-                if(!dir->dir_entry.cluster_low) dir->dir_entry = fat12_16_find_in_root_dir(fs, filename);
-                else dir->dir_entry = fat12_16_find_in_dir(fs, filename, &dir->dir_entry);
+                if(!dir->file.fat.cluster_low) dir->file.fat = fat12_16_find_in_root_dir(fs, filename);
+                else dir->file.fat = fat12_16_find_in_dir(fs, filename, &dir->file.fat);
                 
-                if(!dir->dir_entry.cluster_low) {
+                if(!dir->file.fat.cluster_low) {
                     
                     kfree(dir);
                     return 0;
@@ -106,16 +113,16 @@ int8_t fseek(file_t* file, uint32_t offset, uint8_t origin) {
     switch(origin) {
         
         case SEEK_SET:
-            if(offset >= file->dir_entry.size) return 1;
+            if(offset >= file->file.fat.size) return 1;
             file->seek = offset;
             break;
         case SEEK_CUR:
-            if(offset + file->seek >= file->dir_entry.size) return 1;
+            if(offset + file->seek >= file->file.fat.size) return 1;
             file->seek += offset;
             break;
         case SEEK_END:
-            if(offset > file->dir_entry.size) return 1;
-            file->seek = file->dir_entry.size - offset;
+            if(offset > file->file.fat.size) return 1;
+            file->seek = file->file.fat.size - offset;
             break;
         default:
             return 1;
@@ -138,7 +145,7 @@ uint8_t fread(file_t* file, uint16_t segment, uint16_t offset, uint32_t size) {
         
         case FAT12:
         case FAT16:
-            return fat12_16_read_file_bytes(file->fs, &file->dir_entry, file->seek, size, segment, offset);
+            return fat12_16_read_file_bytes(file->fs, &file->file.fat, file->seek, size, segment, offset);
         
         default:
             return 1;
@@ -236,7 +243,7 @@ uint8_t is_dir(file_t* file) {
         
         case FAT12:
         case FAT16:
-            return file->dir_entry.attributes & 0x10;
+            return file->file.fat.attributes & 0x10;
         
         default:
             return 1;
