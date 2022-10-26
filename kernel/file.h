@@ -8,7 +8,7 @@
 
 typedef struct file_t file_t;
 
-file_t* fopen(char* path); // e.g. "/DATA/LOREMIPS.TXT"; "hd0p0/FILE.TXT" (capitalization doesn't matter); path will be changed
+file_t* fopen(char* path); // e.g. "/DATA/LOREMIPS.TXT"; "hd0p0/FILE.TXT"; path will be changed
 void fclose(file_t* file);
 
 int8_t fseek(file_t* file, uint32_t offset, uint8_t origin);
@@ -16,6 +16,6 @@ uint32_t ftell(file_t* file);
 
 uint8_t fread(file_t* file, uint16_t segment, uint16_t offset, uint32_t size);
 
-uint8_t get_dir_entry(char* dir, size_t entry_index, char* buffer); // buffer must be 13 bytes (name (8 bytes), period, extension(3 bytes), null)
+char* get_dir_entry(char* dir, size_t entry_index);
 
 uint8_t is_dir(file_t* file);

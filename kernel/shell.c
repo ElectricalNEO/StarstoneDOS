@@ -36,13 +36,16 @@ void echo() {
 void ls() {
     
     size_t entry = 0;
-    char filename[13];
+    char* filename;
     
-    while(!get_dir_entry(shell_dir_path, entry, filename)) {
+    while(1) {
+        
+        filename = get_dir_entry(shell_dir_path, entry);
+        if(!filename) return;
         
         if(filename[0] != 0) printf("%s\r\n", filename);
-        
         entry++;
+        kfree(filename);
         
     }
     

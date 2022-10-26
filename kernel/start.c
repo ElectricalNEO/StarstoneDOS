@@ -5,11 +5,9 @@
 #include "fs_manager.h"
 #include "shell.h"
 #include "memory.h"
+#include "file.h"
 
 void start(uint8_t drive) {
-    
-    fs_t* ext2;
-    ext2_inode_t inode;
     
     clear();
     
@@ -21,28 +19,6 @@ void start(uint8_t drive) {
     init_fs_manager();
     
     printf("Initialization complete.\r\n");
-    
-    ext2 = get_fs_by_part_name("hd0p1");
-    if(!ext2) {
-        
-        printf("No hd0p1!\r\n");
-        while(1);
-        
-    }
-    
-    if(ext2_read_inode(ext2, 2, &inode)) {
-        
-        printf("Failed to read root directory inode!\r\n");
-        
-    } else {
-        
-        if(!ext2_find_file(ext2, &inode, &inode, "file123123")) {
-            
-            printf("File found!\r\n");
-            
-        }
-        
-    }
     
     {
         
