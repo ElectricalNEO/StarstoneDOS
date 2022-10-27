@@ -5,7 +5,7 @@ void putc(char ch);
 
 void puts(const char* str) {
     
-    while(*str) putc(*str++);
+    while(*str && *str != '$') putc(*str++);
     
 }
 

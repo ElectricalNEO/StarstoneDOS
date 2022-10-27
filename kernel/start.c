@@ -5,7 +5,7 @@
 #include "fs_manager.h"
 #include "shell.h"
 #include "memory.h"
-#include "file.h"
+#include "syscall.h"
 
 void start(uint8_t drive) {
     
@@ -17,6 +17,7 @@ void start(uint8_t drive) {
     init_drive_manager();
     init_partition_manager(drive);
     init_fs_manager();
+    init_syscalls();
     
     printf("Initialization complete.\r\n");
     

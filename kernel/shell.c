@@ -8,6 +8,7 @@
 #include "fs_manager.h"
 #include "drive_manager.h"
 #include "partition_manager.h"
+#include "jump_to_program.h"
 
 char* shell_dir_path;
 
@@ -247,7 +248,51 @@ void exec_command(char* cmd) {
     else if(!strcmp(token, "list")) list();
     else {
         
-        printf("Unknown command: %s\r\n", token);
+        uint8_t* extension;
+        char* path;
+        file_t* file;
+        uint32_t size;
+        
+        strtok(cmd, ".");
+        extension = strtok(0, ".");
+        if(!extension) extension = "com";
+        
+        path = kmalloc(strlen(shell_dir_path) + 1 + strlen(cmd) + 1 + strlen(extension) + 1);
+        
+        memcpy(shell_dir_path, path, strlen(shell_dir_path));
+        path[strlen(shell_dir_path)] = '/';
+        
+        memcpy(cmd, path + strlen(shell_dir_path) + 1, strlen(cmd));
+        path[strlen(shell_dir_path) + 1 + strlen(cmd)] = '.';
+        
+        memcpy(extension, path + strlen(shell_dir_path) + 1 + strlen(cmd) + 1, strlen(extension));
+        path[strlen(shell_dir_path) + strlen(cmd) + strlen(extension) + 2] = 0;
+        
+        file = fopen(path);
+        kfree(path);
+        
+        if(!file) {
+            
+            printf("No such command!\r\n");
+            return;
+            
+        }
+        
+        fseek(file, 0, SEEK_END);
+        size = ftell(file);
+        fseek(file, 0, SEEK_SET);
+        
+        if(fread(file, 0x1000, 0x100, size)) {
+            
+            printf("Failed to read!\r\n");
+            
+        }
+        
+        fclose(file);
+        
+        jump_to_program();
+        
+        printf("\r\n");
         
     }
     

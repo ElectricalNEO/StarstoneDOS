@@ -17,6 +17,7 @@ typedef struct file_t {
     file_fs_t file;
     uint32_t seek;
     uint32_t size;
+    uint8_t is_dir;
     
 } file_t;
 
@@ -96,6 +97,7 @@ file_t* fopen(char* path) {
             }
             
             dir->size = dir->file.fat.size;
+            dir->is_dir = dir->file.fat.attributes & 0x10;
             return dir;
             
         case EXT2:
@@ -121,6 +123,7 @@ file_t* fopen(char* path) {
             }
             
             dir->size = dir->file.ext2.size_lower;
+            dir->is_dir = dir->file.ext2.type_permissions & 0x4000;
             return dir;
             
         default:
@@ -348,15 +351,6 @@ char* get_dir_entry(char* dir, size_t entry_index) {
 
 uint8_t is_dir(file_t* file) {
     
-    switch(file->fs->type) {
-        
-        case FAT12:
-        case FAT16:
-            return file->file.fat.attributes & 0x10;
-        
-        default:
-            return 1;
-        
-    }
+    return file->is_dir;
     
 }
