@@ -11,6 +11,10 @@ int 21h
 mov ah, 01h
 int 21h
 
+mov ah, 02h
+mov dl, 'E'
+int 21h
+
 xor ah, ah
 int 21h
 

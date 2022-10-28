@@ -123,7 +123,7 @@ file_t* fopen(char* path) {
             }
             
             dir->size = dir->file.ext2.size_lower;
-            dir->is_dir = dir->file.ext2.type_permissions & 0x4000;
+            dir->is_dir = (dir->file.ext2.type_permissions & 0x4000) > 0 ? 1 : 0;
             return dir;
             
         default:

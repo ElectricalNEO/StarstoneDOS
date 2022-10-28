@@ -14,6 +14,12 @@ _int21:
     cmp ah, 01h
     je syscall_ah01
     
+    cmp ah, 02h
+    je syscall_ah02
+    
+    cmp ah, 06h
+    je syscall_ah06
+    
     cmp ah, 09h
     je syscall_ah09
     
@@ -41,8 +47,38 @@ syscall_ah01:
     jne .skip_int23
     
     int 23h
-    
 .skip_int23:
+    
+    iret
+
+syscall_ah02:
+    
+    push bx
+    
+    mov ah, 0eh
+    mov al, dl
+    xor bx, bx
+    int 10h
+    
+    pop bx
+    
+    cmp dl, 3
+    jne .skip_int23
+    
+    int 23h
+.skip_int23:
+    iret
+    
+syscall_ah06:
+    
+    push bx
+    
+    mov ah, 0eh
+    mov al, dl
+    xor bx, bx
+    int 10h
+    
+    pop bx
     
     iret
     
