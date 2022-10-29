@@ -12,10 +12,10 @@ void asm_putc(char ch);
 
 void putc(char ch) {
     
-    if(ch == 3) { // CTRL+C
+    if(ch < 27 && ch != '\r' && ch != '\n' && ch != '\b') { // CTRL+
         
         asm_putc('^');
-        asm_putc('C');
+        asm_putc('A' + ch - 1);
         
     } else asm_putc(ch);
     
@@ -92,7 +92,8 @@ void gets(char* buf, size_t buf_size) {
         
         if(key == '\b' && i > 0) {
             
-            puts("\b \b");
+            if(buf[i-1] < 27 && buf[i-1] != '\r' && buf[i-1] != '\n' && buf[i-1] != '\b') puts("\b\b  \b\b");
+            else puts("\b \b");
             i--;
             
         } else if(key == '\r') {
