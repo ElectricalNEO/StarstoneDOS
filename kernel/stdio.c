@@ -1,7 +1,25 @@
 #include "stdio.h"
 #include "conv.h"
 
-void putc(char ch);
+#pragma aux asm_putc = \
+"mov ah, 0eh" \
+"xor bx, bx" \
+"int 10h" \
+modify [ah bx] \
+parm [al]
+
+void asm_putc(char ch);
+
+void putc(char ch) {
+    
+    if(ch == 3) { // CTRL+C
+        
+        asm_putc('^');
+        asm_putc('C');
+        
+    } else asm_putc(ch);
+    
+}
 
 void puts(const char* str) {
     

@@ -2,13 +2,6 @@
 
 #include "types.h"
 
-#pragma aux putc = \
-"mov ah, 0eh" \
-"xor bx, bx" \
-"int 10h" \
-modify [ah bx] \
-parm [al]
-
 #pragma aux clear = \
 "mov ax, 3" \
 "int 10h" \
